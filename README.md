@@ -1,53 +1,262 @@
-# MCP Go Echo Server
+# 🚀 MCP Go Utilities Server
 
-This is a sample implementation of a server for the Mark3Labs Communication Protocol (MCP) written in Go.
+[![Go CI](https://github.com/podanypepa/mcpserver/actions/workflows/ci.yml/badge.svg)](https://github.com/podanypepa/mcpserver/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/podanypepa/mcpserver)](https://goreportcard.com/report/github.com/podanypepa/mcpserver)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-The server exposes a simple `echo` tool that takes a text string and an optional boolean flag to return the text in uppercase.
+A production-ready implementation of a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server written in Go. This server provides various utility tools accessible through the MCP protocol.
 
-## Prerequisites
+## ✨ Features
 
-- Go programming language installed.
+- 🔧 **5 Useful Tools**:
+  - `echo` - Echo text with optional uppercase conversion
+  - `reverse` - Reverse any text string (supports Unicode)
+  - `hash` - Generate MD5 or SHA256 hashes
+  - `uuid` - Generate UUID v4 identifiers
+  - `timestamp` - Get current timestamps in various formats
 
-## Running the Server
+- 🔐 **Bearer Token Authentication** - Secure your server with API tokens
+- 🐳 **Docker Support** - Easy containerization
+- 🧪 **Full Test Coverage** - Comprehensive unit tests
+- 🏗️ **Clean Architecture** - Modular and maintainable code structure
+- ⚙️ **Configurable** - Via command-line flags or environment variables
 
-1.  **Start the server:**
+## 📋 Prerequisites
 
-    ```sh
-    go run main.go
-    ```
+- Go 1.22+ or Docker
 
-2.  The server will start on `http://127.0.0.1:8080` by default.
+## 🚀 Quick Start
 
-3.  **Authentication:**
-    By default, the server requires a bearer token for authorization. The default token is `secret123` as seen in the `send.sh` script. You can change this by running the server with the `-token` flag:
+### Using Go
 
-    ```sh
-    go run main.go -token="your-secret-token"
-    ```
+```bash
+# Clone the repository
+git clone https://github.com/podanypepa/mcpserver.git
+cd mcpserver
 
-### Command-line flags
+# Install dependencies
+go mod download
 
-You can customize the server's behavior using the following flags:
+# Run the server
+go run main.go
+```
 
--   `-addr`: The HTTP listen address (default: `:8080`).
--   `-token`: The bearer token required for access.
--   `-path`: The base path for the MCP endpoints (default: `/mcp`).
+### Using Make
 
-## Using the Server
+```bash
+make help           # Show all available commands
+make run            # Run the server
+make test           # Run tests
+make build          # Build binary
+```
 
-The `send.sh` script is provided to demonstrate how to interact with the server. The script uses `curl` to send a series of JSON-RPC messages to the server.
+### Using Docker
 
-1.  **Make sure the server is running.**
+```bash
+# Build the image
+docker build -t mcpserver .
 
-2.  **Execute the script:**
+# Run the container
+docker run -p 8080:8080 -e MCP_TOKEN=secret123 mcpserver
+```
 
-    ```sh
-    ./send.sh
-    ```
+## ⚙️ Configuration
 
-The script performs the following actions:
-1.  Initializes the MCP connection.
-2.  Lists the available tools on the server (which should include `echo`).
-3.  Calls the `echo` tool with the text "Ahoj, pepp" and the `uppercase` flag set to `true`.
+Configure the server using command-line flags or environment variables:
 
-You will see the JSON-RPC responses from the server for each of these requests printed to your terminal.
+| Flag | Environment Variable | Default | Description |
+|------|---------------------|---------|-------------|
+| `-addr` | `MCP_ADDR` | `:8080` | HTTP listen address |
+| `-token` | `MCP_TOKEN` | `""` | Bearer token for authentication |
+| `-path` | `MCP_PATH` | `/mcp` | Base path for MCP endpoints |
+
+### Examples
+
+```bash
+# With custom port and token
+go run main.go -addr=":3000" -token="my-secret-token"
+
+# Using environment variables
+export MCP_TOKEN="my-secret-token"
+export MCP_ADDR=":3000"
+go run main.go
+```
+
+## 🔧 Available Tools
+
+### 1. Echo
+Echoes text back, optionally in uppercase.
+
+```json
+{
+  "method": "tools/call",
+  "params": {
+    "name": "echo",
+    "arguments": {
+      "text": "Hello, World!",
+      "uppercase": true
+    }
+  }
+}
+```
+
+### 2. Reverse
+Reverses any text string (Unicode-safe).
+
+```json
+{
+  "method": "tools/call",
+  "params": {
+    "name": "reverse",
+    "arguments": {
+      "text": "Hello, World!"
+    }
+  }
+}
+```
+
+### 3. Hash
+Generates MD5 or SHA256 hash.
+
+```json
+{
+  "method": "tools/call",
+  "params": {
+    "name": "hash",
+    "arguments": {
+      "text": "Hello, World!",
+      "algorithm": "sha256"
+    }
+  }
+}
+```
+
+### 4. UUID
+Generates a new UUID v4.
+
+```json
+{
+  "method": "tools/call",
+  "params": {
+    "name": "uuid",
+    "arguments": {}
+  }
+}
+```
+
+### 5. Timestamp
+Returns current timestamp in various formats.
+
+```json
+{
+  "method": "tools/call",
+  "params": {
+    "name": "timestamp",
+    "arguments": {
+      "format": "RFC3339"
+    }
+  }
+}
+```
+
+Supported formats: `RFC3339`, `Unix`, `UnixMilli`
+
+## 🧪 Testing
+
+```bash
+# Run tests
+make test
+
+# Run tests with coverage
+make test-coverage
+
+# View coverage in browser
+open coverage.html
+```
+
+## 🛠️ Development
+
+```bash
+# Format code
+make fmt
+
+# Run linter
+make lint
+
+# Install golangci-lint (if needed)
+brew install golangci-lint
+
+# Build binary
+make build
+```
+
+## 📝 Example Client Usage
+
+The `send.sh` script demonstrates how to interact with the server:
+
+```bash
+# Make sure the server is running
+go run main.go -token="secret123"
+
+# In another terminal, run the example script
+./send.sh
+```
+
+You can also use `curl` directly:
+
+```bash
+curl -X POST http://127.0.0.1:8080/mcp/messages \
+  -H 'Authorization: Bearer secret123' \
+  -H 'Content-Type: application/json' \
+  -H 'Mcp-Protocol-Version: 2025-06-18' \
+  --data '{
+    "jsonrpc":"2.0",
+    "id":1,
+    "method":"tools/call",
+    "params":{
+      "name":"echo",
+      "arguments":{"text":"Hello","uppercase":true}
+    }
+  }'
+```
+
+## 📦 Project Structure
+
+```
+.
+├── main.go              # Application entry point
+├── tools/
+│   ├── tools.go         # Tool implementations
+│   └── tools_test.go    # Tool tests
+├── Makefile             # Build automation
+├── Dockerfile           # Container definition
+├── .github/
+│   └── workflows/
+│       └── ci.yml       # CI/CD pipeline
+└── README.md            # This file
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- Built with [mcp-go](https://github.com/mark3labs/mcp-go) by Mark3 Labs
+- Inspired by the [Model Context Protocol](https://modelcontextprotocol.io/)
+
+## 📧 Contact
+
+Your Name - [@podanypepa](https://github.com/podanypepa)
+
+Project Link: [https://github.com/podanypepa/mcpserver](https://github.com/podanypepa/mcpserver)

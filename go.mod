@@ -2,12 +2,14 @@ module github.com/podanypepa/mcpserver
 
 go 1.25.2
 
-require github.com/mark3labs/mcp-go v0.41.1
+require (
+	github.com/google/uuid v1.6.0
+	github.com/mark3labs/mcp-go v0.41.1
+)
 
 require (
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/invopop/jsonschema v0.13.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/spf13/cast v1.7.1 // indirect

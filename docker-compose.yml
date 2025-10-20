@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  mcpserver:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - MCP_ADDR=:8080
+      - MCP_PATH=/mcp
+      - MCP_TOKEN=secret123
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/mcp/messages"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
