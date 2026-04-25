@@ -1,10 +1,10 @@
 module github.com/podanypepa/mcpserver
 
-go 1.25.2
+go 1.25.5
 
 require (
 	github.com/google/uuid v1.6.0
-	github.com/mark3labs/mcp-go v0.48.0
+	github.com/mark3labs/mcp-go v0.49.0
 )
 
 require (
